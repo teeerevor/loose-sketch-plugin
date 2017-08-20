@@ -1,0 +1,26 @@
+{
+  "name": "Loose!",
+  "description": "Fire those arrows. Adds arrows to selected paths. Matches color and weight.",
+  "author": "Trevor Wolf",
+  "homepage": "https://github.com/teeerevor/Loose!",
+  "appcast": "https://raw.githubusercontent.com/teeerevor/Loose!/master/.appcast.xml",
+  "identifier": "com.teeerevor.sketch.loose!",
+  "version": "1.0",
+  "compatibleVersion": "42",
+  "bundleVersion": "1.0",
+  "commands": [
+    {
+      "name": "Loose!",
+      "identifier": "Loose!",
+      "script": "loose.js",
+      "handler" : "onRun",
+      "shortcut": "cmd l"
+    }
+  ],
+  "menu": {
+    "title": "Loose!",
+    "items": [
+      "Loose!"
+    ]
+  }
+}
