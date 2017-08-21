@@ -25,7 +25,6 @@ const createArrowhead = (layer, headPosition, headType, headScale) => {
   //but also make sure a step is at minimum the arrowhead size
   var lineThickness = layer.style().borders()[0].thickness();
 
-  context.document.showMessage("thickness = ( " + lineThickness + " )");
   var scale = 1+(lineThickness/5);
   if (step < (scale*7)) {
     step = scale*7;
@@ -115,8 +114,6 @@ const toggleArrows = (group) => {
     }
   }
 }
-
-
 
 const onRun = (context) => {
   var doc = context.document;
