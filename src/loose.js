@@ -1,4 +1,8 @@
+//resize arrow scale up/down
+
 const createArrowhead = (layer, headPosition, headType, headScale) => {
+  log(layer.class());
+  const baseArrowSize = 4
   headPosition = (typeof headPosition !== 'undefined') ?  headPosition : 'end';
   // arrowPosition - which end of path to attach arrowhead
   // 0=begin, 1=end of path, 2=both ends
@@ -12,42 +16,27 @@ const createArrowhead = (layer, headPosition, headType, headScale) => {
 
   //split line depending on how curvy it is, with at least 2 points
   var path = layer.bezierPathWithTransforms();
-  var count = path.elementCount()*2;
+  const lineThickness = layer.style().borders().firstObject().thickness();
+  const length = path.length();
+  const scale = 1+(lineThickness/5);
 
-  //hacky way of avoiding weirdly angled arrowheads for tight curves
-  //handle spirals by choosing the greater number
-  if (count<50) {
-    count=50;
-  }
-  var length = path.length();
-  var step = length/count;
-
-  //but also make sure a step is at minimum the arrowhead size
-  var lineThickness = layer.style().borders()[0].thickness();
-
-  var scale = 1+(lineThickness/5);
-  if (step < (scale*7)) {
-    step = scale*7;
-  }
-
-  var position = headPosition == 'end' ? length : 0;
-  var endPoint = path.pointOnPathAtLength(position);
-  var linePoint = path.pointOnPathAtLength(headPosition == 'end' ? position-step : position+step);
-  var angle = 360/(2*Math.PI) * (Math.atan2(linePoint.y - endPoint.y, linePoint.x - endPoint.x));
+  const position = headPosition == 'end' ? length : 0;
+  //line end
+  const endPoint = path.pointOnPathAtLength(position);
+  //nextpoint on path
+  const arrowBase = headPosition == 'end' ? position - baseArrowSize : position + baseArrowSize
+  const linePoint = path.pointOnPathAtLength(arrowBase);
+  const angle = 360/(2*Math.PI) * (Math.atan2(linePoint.y - endPoint.y, linePoint.x - endPoint.x));
 
   //0 - triangle as arrowhead
   //TBD: different shapes
   var headPath = NSBezierPath.bezierPath();
-  headPath.moveToPoint(NSMakePoint(0,7));
-  headPath.lineToPoint(NSMakePoint(-14,0));
-  headPath.lineToPoint(NSMakePoint(0,-7));
+  headPath.moveToPoint(NSMakePoint(0,baseArrowSize));
+  headPath.lineToPoint(NSMakePoint(-baseArrowSize*2,0));
+  headPath.lineToPoint(NSMakePoint(0,-baseArrowSize));
   headPath.closePath();
 
   var headShape = MSShapeGroup.shapeWithBezierPath(headPath);
-
-  //scale to lineweight
-  //TBD: user input
-  var scale = 1+(lineThickness/5);
   headShape.frame().setWidth(Math.floor(headShape.frame().width()*scale));
   headShape.frame().setHeight(Math.floor(headShape.frame().height()*scale));
 
@@ -114,6 +103,17 @@ const toggleArrows = (group) => {
     }
   }
 }
+const isCompletShape = (layer) =>{
+  const path = layer.bezierPathWithTransforms();
+  const start = path.pointOnPathAtLength(0);
+  const end = path.pointOnPathAtLength(path.length());
+  const startx = Math.floor(start.x);
+  const starty = Math.floor(start.y);
+  const endx = Math.floor(end.x);
+  const endy = Math.floor(end.y);
+  //lol can't math with floats for some reason.
+  return startx === endx && starty === endy;
+}
 
 const onRun = (context) => {
   var doc = context.document;
@@ -131,7 +131,11 @@ const onRun = (context) => {
     for (var i = 0; i < selectedCount; i++) {
       var layer = selectedLayers[i];
       if (layer.isKindOfClass(MSShapeGroup)){
-        arrows.push(createArrow(doc, layer));
+        if(isCompletShape(layer)){
+          doc.showMessage("Skipping layer, I'll only add arrows to lines.");
+        } else {
+          arrows.push(createArrow(doc, layer));
+        }
       } else if (layer.isKindOfClass(MSLayerGroup)){
         toggleArrows(layer);
         arrows.push(layer);
