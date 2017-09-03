@@ -1,9 +1,18 @@
-//resize arrow scale up/down
-//delete and remake arrows rather then toggle vis.
+const BASE_ARROW_SIZE = 8;
+const ARROW_NAME_SUFFIX = "-LOOSE!";
+const ARROW_START = 'start';
+const ARROW_END = 'end';
+const ARROW_START_NAME ='ArrowheadStart';
+const ARROW_END_NAME ='ArrowheadEnd';
 
-const createArrowhead = (layer, headPosition, headType, headScale) => {
-  const baseArrowSize = 4
-  headPosition = (typeof headPosition !== 'undefined') ?  headPosition : 'end';
+const createArrowhead = ({
+  layer,
+  name,
+  headPosition,
+  headType,
+  headScale,
+}) => {
+  headPosition = (typeof headPosition !== 'undefined') ?  headPosition : ARROW_END;
   headType = (typeof headType !== 'undefined') ?  headType : 'fill';
   headScale = (typeof headScale !== 'undefined') ?  headScale : 'default';
 
@@ -12,18 +21,18 @@ const createArrowhead = (layer, headPosition, headType, headScale) => {
   const length = path.length();
   const scale = 1+(lineThickness/5);
 
-  const position = headPosition == 'end' ? length : 0;
+  const position = headPosition == ARROW_END ? length : 0;
   //line end
   const endPoint = path.pointOnPathAtLength(position);
   //nextpoint on path
-  const arrowBase = headPosition == 'end' ? position - baseArrowSize : position + baseArrowSize
+  const arrowBase = headPosition == ARROW_END ? position - BASE_ARROW_SIZE : position + BASE_ARROW_SIZE
   const linePoint = path.pointOnPathAtLength(arrowBase);
   const angle = 360/(2*Math.PI) * (Math.atan2(linePoint.y - endPoint.y, linePoint.x - endPoint.x));
 
   var headPath = NSBezierPath.bezierPath();
-  headPath.moveToPoint(NSMakePoint(0,baseArrowSize));
-  headPath.lineToPoint(NSMakePoint(-baseArrowSize*2,0));
-  headPath.lineToPoint(NSMakePoint(0,-baseArrowSize));
+  headPath.moveToPoint(NSMakePoint(0,BASE_ARROW_SIZE));
+  headPath.lineToPoint(NSMakePoint(-BASE_ARROW_SIZE*2,0));
+  headPath.lineToPoint(NSMakePoint(0,-BASE_ARROW_SIZE));
   headPath.closePath();
 
   var headShape = MSShapeGroup.shapeWithBezierPath(headPath);
@@ -37,53 +46,92 @@ const createArrowhead = (layer, headPosition, headType, headScale) => {
 
   var fill = headShape.style().addStylePartOfType(0);
   fill.color = layer.style().borders().firstObject().color();
-
+  if(!!name){
+    headShape.setName(name);
+  }
   return headShape;
 }
 
+const groupAndResize = (group, children) => {
+  group.addLayers(children);
+  group.resizeToFitChildrenWithOption(0);
+  return group;
+}
 
 const createArrow = (doc, layer, arrowPosition, arrowType, arrowScale) => {
-  var arrowheadStart = createArrowhead(layer, 'start')
-  arrowheadStart.setName('ArrowheadStart');
-  var arrowheadEnd = createArrowhead(layer, 'end')
-  arrowheadEnd.setName('ArrowheadEnd');
+  var arrowheadStart = createArrowhead({
+    layer,
+    headPosition: ARROW_START,
+    name: ARROW_START_NAME,
+  });
 
-  //add to layer and group it with path
+  var arrowheadEnd = createArrowhead({
+    layer,
+    headPosition: ARROW_END,
+    name: ARROW_END_NAME,
+  });
+
   var parent = layer.parentGroup();
   var group = MSLayerGroup.new();
   parent.removeLayer(layer);
   parent.addLayers([group]);
-  group.addLayers([layer, arrowheadStart, arrowheadEnd]);
-  group.resizeToFitChildrenWithOption(0);
-  if ((layer.name() == 'Line') || (layer.name() == 'Path')) {
-    group.setName('Arrow');
-  } else {
-    group.setName(layer.name());
-  }
-  return group;
+  const name = layer.name();
+  group.setName(
+    name.indexOf(ARROW_NAME_SUFFIX) === -1 ?
+        name + ARROW_NAME_SUFFIX
+        :
+        name
+  );
+  return groupAndResize(group, [layer, arrowheadStart, arrowheadEnd]);
 }
 
 const toggleArrows = (group) => {
-  var start, end;
-  const children = group.children();
-  children.forEach((child) => {
-    if (child.name() == 'ArrowheadStart')
+  var start, end, line;
+  group.layers().forEach((child) => {
+    log("child="+child.name());
+    if (child.name() == ARROW_START_NAME) {
       start = child;
-    if (child.name() == 'ArrowheadEnd')
+    } else if (child.name() == ARROW_END_NAME) {
       end = child;
+    } else {
+      line = child;
+    }
   });
 
-  var startOpacity = start.style().contextSettings().opacity();
-  var endOpacity = end.style().contextSettings().opacity();
-  if(startOpacity == 1 && endOpacity == 1 ){
-    start.style().contextSettings().setOpacity(0);
+  if (!!start && !!end ){
+    group.removeLayer(start);
+    group.removeLayer(end);
+    end = createArrowhead({
+      layer: line,
+      headPosition: 'end',
+      name: 'ArrowheadEnd',
+    });
+    groupAndResize(group, [end]);
   }
-  if(startOpacity == 0 && endOpacity == 1 ){
-    end.style().contextSettings().setOpacity(0);
-    start.style().contextSettings().setOpacity(1);
+  if (!start && !!end ){
+    group.removeLayer(start);
+    group.removeLayer(end);
+    start = createArrowhead({
+      layer: line,
+      headPosition: 'start',
+      name: 'ArrowheadStart',
+    });
+    groupAndResize(group, [start]);
   }
-  if(startOpacity == 1 && endOpacity == 0 ){
-    end.style().contextSettings().setOpacity(1);
+  if (!!start && !end){
+    group.removeLayer(start);
+    group.removeLayer(end);
+    start = createArrowhead({
+      layer: line,
+      headPosition: 'start',
+      name: 'ArrowheadStart',
+    });
+    end = createArrowhead({
+      layer: line,
+      headPosition: 'end',
+      name: 'ArrowheadEnd',
+    });
+    groupAndResize(group, [start, end]);
   }
 }
 
