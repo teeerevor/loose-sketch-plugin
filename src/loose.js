@@ -1,74 +1,88 @@
 const BASE_ARROW_SIZE = 8;
 const ARROW_NAME_SUFFIX = "-LOOSE!";
-const ARROW_START = 'start';
-const ARROW_END = 'end';
-const ARROW_START_NAME ='ArrowheadStart';
-const ARROW_END_NAME ='ArrowheadEnd';
+const ARROW_START = "start";
+const ARROW_END = "end";
+const ARROW_START_NAME = "ArrowheadStart";
+const ARROW_END_NAME = "ArrowheadEnd";
 
 const createArrowhead = ({
   layer,
   name,
   headPosition,
   headType,
-  headScale,
+  headScale
 }) => {
-  headPosition = (typeof headPosition !== 'undefined') ?  headPosition : ARROW_END;
-  headType = (typeof headType !== 'undefined') ?  headType : 'fill';
-  headScale = (typeof headScale !== 'undefined') ?  headScale : 'default';
+  headPosition = typeof headPosition !== "undefined" ? headPosition : ARROW_END;
+  headType = typeof headType !== "undefined" ? headType : "fill";
+  headScale = typeof headScale !== "undefined" ? headScale : "default";
 
   var path = layer.bezierPathWithTransforms();
-  const lineThickness = layer.style().borders().firstObject().thickness();
+  const lineThickness = layer
+    .style()
+    .borders()
+    .firstObject()
+    .thickness();
   const length = path.length();
-  const scale = 1+(lineThickness/5);
+  const scale = 1 + lineThickness / 5;
 
   const position = headPosition == ARROW_END ? length : 0;
   //line end
   const endPoint = path.pointOnPathAtLength(position);
   //nextpoint on path
-  const arrowBase = headPosition == ARROW_END ? position - BASE_ARROW_SIZE : position + BASE_ARROW_SIZE
+  const arrowBase =
+    headPosition == ARROW_END
+      ? position - BASE_ARROW_SIZE
+      : position + BASE_ARROW_SIZE;
   const linePoint = path.pointOnPathAtLength(arrowBase);
-  const angle = 360/(2*Math.PI) * (Math.atan2(linePoint.y - endPoint.y, linePoint.x - endPoint.x));
+  const angle =
+    360 /
+    (2 * Math.PI) *
+    Math.atan2(linePoint.y - endPoint.y, linePoint.x - endPoint.x);
 
   var headPath = NSBezierPath.bezierPath();
-  headPath.moveToPoint(NSMakePoint(0,BASE_ARROW_SIZE));
-  headPath.lineToPoint(NSMakePoint(-BASE_ARROW_SIZE*2,0));
-  headPath.lineToPoint(NSMakePoint(0,-BASE_ARROW_SIZE));
+  headPath.moveToPoint(NSMakePoint(0, BASE_ARROW_SIZE));
+  headPath.lineToPoint(NSMakePoint(-BASE_ARROW_SIZE * 2, 0));
+  headPath.lineToPoint(NSMakePoint(0, -BASE_ARROW_SIZE));
   headPath.closePath();
 
   var headShape = MSShapeGroup.shapeWithBezierPath(headPath);
-  headShape.frame().setWidth(Math.floor(headShape.frame().width()*scale));
-  headShape.frame().setHeight(Math.floor(headShape.frame().height()*scale));
+  headShape.frame().setWidth(Math.floor(headShape.frame().width() * scale));
+  headShape.frame().setHeight(Math.floor(headShape.frame().height() * scale));
 
-  headShape.setRotation(-1*angle);
+  headShape.setRotation(-1 * angle);
 
-  headShape.frame().setX(endPoint.x - headShape.frame().width()/2);
-  headShape.frame().setY(endPoint.y - headShape.frame().height()/2);
+  headShape.frame().setX(endPoint.x - headShape.frame().width() / 2);
+  headShape.frame().setY(endPoint.y - headShape.frame().height() / 2);
 
   var fill = headShape.style().addStylePartOfType(0);
-  fill.color = layer.style().borders().firstObject().color();
-  if(!!name){
+  fill.color = layer
+    .style()
+    .borders()
+    .firstObject()
+    .color();
+  if (!!name) {
     headShape.setName(name);
   }
   return headShape;
-}
+};
 
 const groupAndResize = (group, children) => {
   group.addLayers(children);
   group.resizeToFitChildrenWithOption(0);
   return group;
-}
+};
 
 const createArrow = (doc, layer, arrowPosition, arrowType, arrowScale) => {
   var arrowheadStart = createArrowhead({
     layer,
     headPosition: ARROW_START,
-    name: ARROW_START_NAME,
+    name: ARROW_START_NAME
   });
 
   var arrowheadEnd = createArrowhead({
     layer,
     headPosition: ARROW_END,
-    name: ARROW_END_NAME,
+    name: ARROW_END_NAME
   });
 
   var parent = layer.parentGroup();
@@ -77,18 +91,15 @@ const createArrow = (doc, layer, arrowPosition, arrowType, arrowScale) => {
   parent.addLayers([group]);
   const name = layer.name();
   group.setName(
-    name.indexOf(ARROW_NAME_SUFFIX) === -1 ?
-        name + ARROW_NAME_SUFFIX
-        :
-        name
+    name.indexOf(ARROW_NAME_SUFFIX) === -1 ? name + ARROW_NAME_SUFFIX : name
   );
   return groupAndResize(group, [layer, arrowheadStart, arrowheadEnd]);
-}
+};
 
-const toggleArrows = (group) => {
+const toggleArrows = group => {
   var start, end, line;
-  group.layers().forEach((child) => {
-    log("child="+child.name());
+  group.layers().forEach(child => {
+    log("child=" + child.name());
     if (child.name() == ARROW_START_NAME) {
       start = child;
     } else if (child.name() == ARROW_END_NAME) {
@@ -98,44 +109,44 @@ const toggleArrows = (group) => {
     }
   });
 
-  if (!!start && !!end ){
+  if (!!start && !!end) {
     group.removeLayer(start);
     group.removeLayer(end);
     end = createArrowhead({
       layer: line,
-      headPosition: 'end',
-      name: 'ArrowheadEnd',
+      headPosition: "end",
+      name: "ArrowheadEnd"
     });
     groupAndResize(group, [end]);
   }
-  if (!start && !!end ){
+  if (!start && !!end) {
     group.removeLayer(start);
     group.removeLayer(end);
     start = createArrowhead({
       layer: line,
-      headPosition: 'start',
-      name: 'ArrowheadStart',
+      headPosition: "start",
+      name: "ArrowheadStart"
     });
     groupAndResize(group, [start]);
   }
-  if (!!start && !end){
+  if (!!start && !end) {
     group.removeLayer(start);
     group.removeLayer(end);
     start = createArrowhead({
       layer: line,
-      headPosition: 'start',
-      name: 'ArrowheadStart',
+      headPosition: "start",
+      name: "ArrowheadStart"
     });
     end = createArrowhead({
       layer: line,
-      headPosition: 'end',
-      name: 'ArrowheadEnd',
+      headPosition: "end",
+      name: "ArrowheadEnd"
     });
     groupAndResize(group, [start, end]);
   }
-}
+};
 
-const isCompletShape = (layer) =>{
+const isCompletShape = layer => {
   const path = layer.bezierPathWithTransforms();
   const start = path.pointOnPathAtLength(0);
   const end = path.pointOnPathAtLength(path.length());
@@ -145,9 +156,9 @@ const isCompletShape = (layer) =>{
   const endy = Math.floor(end.y);
   //lol can't math with floats for some reason.
   return startx === endx && starty === endy;
-}
+};
 
-const onRun = (context) => {
+const onRun = context => {
   var doc = context.document;
   var selectedLayers = context.selection;
   var selectedCount = selectedLayers.count();
@@ -157,26 +168,26 @@ const onRun = (context) => {
   document.selectedLayers.clear();
 
   if (selectedCount == 0) {
-    doc.showMessage('Oops, no selection.');
+    doc.showMessage("Oops, no selection.");
   } else {
     var arrows = [];
     for (var i = 0; i < selectedCount; i++) {
       var layer = selectedLayers[i];
-      if (layer.isKindOfClass(MSShapeGroup)){
-        if(isCompletShape(layer)){
+      if (layer.isKindOfClass(MSShapeGroup)) {
+        if (isCompletShape(layer)) {
           doc.showMessage("Skipping layer, I'll only add arrows to lines.");
         } else {
           arrows.push(createArrow(doc, layer));
         }
-      } else if (layer.isKindOfClass(MSLayerGroup)){
+      } else if (layer.isKindOfClass(MSLayerGroup)) {
         toggleArrows(layer);
         arrows.push(layer);
       }
     }
     //push arrows to selection so you can keep toggeling + resize
-    arrows.forEach((arrow) => {
+    arrows.forEach(arrow => {
       document.layerWithID(arrow.objectID()).addToSelection();
     });
   }
-}
+};
 onRun(context);
