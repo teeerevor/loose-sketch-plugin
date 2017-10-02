@@ -96,10 +96,25 @@ const createArrow = (doc, layer, arrowPosition, arrowType, arrowScale) => {
   return groupAndResize(group, [layer, arrowheadStart, arrowheadEnd]);
 };
 
-const toggleArrows = group => {
+const createHead = (group, line) => {
+  const start = createArrowhead({
+    layer: line,
+    headPosition: "start",
+    name: "ArrowheadStart"
+  });
+  groupAndResize(group, [start]);
+};
+const createNock = (group, line) => {
+  const end = createArrowhead({
+    layer: line,
+    headPosition: "end",
+    name: "ArrowheadEnd"
+  });
+  groupAndResize(group, [end]);
+};
+const grabItems = group => {
   var start, end, line;
   group.layers().forEach(child => {
-    log("child=" + child.name());
     if (child.name() == ARROW_START_NAME) {
       start = child;
     } else if (child.name() == ARROW_END_NAME) {
@@ -108,41 +123,35 @@ const toggleArrows = group => {
       line = child;
     }
   });
+  return { start, end, line };
+};
 
-  if (!!start && !!end) {
+const toggleArrows = (group, head, nock) => {
+  log('head='+head);
+  log('nock='+nock);
+  const { start, end, line } = grabItems(group);
+
+  if (head && nock) {
     group.removeLayer(start);
     group.removeLayer(end);
-    end = createArrowhead({
-      layer: line,
-      headPosition: "end",
-      name: "ArrowheadEnd"
-    });
-    groupAndResize(group, [end]);
-  }
-  if (!start && !!end) {
-    group.removeLayer(start);
+    if (!!start && !!end) {
+      createNock(group, line);
+    }
+    if (!start && !!end) {
+      createHead(group, line);
+    }
+    if (!!start && !end) {
+      createHead(group, line);
+      createNock(group, line);
+    }
+  } else if (head && !nock) {
     group.removeLayer(end);
-    start = createArrowhead({
-      layer: line,
-      headPosition: "start",
-      name: "ArrowheadStart"
-    });
-    groupAndResize(group, [start]);
-  }
-  if (!!start && !end) {
+    if (!end)
+      createNock(group, line);
+  } else if (nock && !head) {
     group.removeLayer(start);
-    group.removeLayer(end);
-    start = createArrowhead({
-      layer: line,
-      headPosition: "start",
-      name: "ArrowheadStart"
-    });
-    end = createArrowhead({
-      layer: line,
-      headPosition: "end",
-      name: "ArrowheadEnd"
-    });
-    groupAndResize(group, [start, end]);
+    if (!start)
+      createHead(group, line);
   }
 };
 
@@ -158,7 +167,7 @@ const isCompletShape = layer => {
   return startx === endx && starty === endy;
 };
 
-const onRun = context => {
+const arrowsWork = (context, head, nock) => {
   var doc = context.document;
   var selectedLayers = context.selection;
   var selectedCount = selectedLayers.count();
@@ -180,7 +189,7 @@ const onRun = context => {
           arrows.push(createArrow(doc, layer));
         }
       } else if (layer.isKindOfClass(MSLayerGroup)) {
-        toggleArrows(layer);
+        toggleArrows(layer, head, nock);
         arrows.push(layer);
       }
     }
@@ -190,4 +199,26 @@ const onRun = context => {
     });
   }
 };
-onRun(context);
+
+var toggleTip = function(context) {
+  const nock = false;
+  const head = true;
+  arrowsWork(context, head, nock);
+};
+
+var toggleNock = function(context) {
+  const nock = true;
+  const head = false;
+  arrowsWork(context, head, nock);
+};
+
+var toggleBoth = function(context) {
+  const nock = true;
+  const head = true;
+  arrowsWork(context, head, nock);
+};
+
+export {toggleBoth, toggleNock, toggleTip};
+//toggleBoth(context);
+//toggleTip(context);
+//toggleNock(context);

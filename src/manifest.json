@@ -11,16 +11,35 @@
   "commands": [
     {
       "name": "Loose!",
-      "identifier": "Loose!",
+      "identifier": "both",
       "script": "loose.js",
-      "handler" : "onRun",
-      "shortcut": "cmd l"
+      "handler" : "toggleBoth",
+      "shortcut": "cmd l",
+      "description" : "Rename Selected artboard(s) at the root of the currently selected item"
+    },
+    {
+      "name": "Tip",
+      "identifier": "tip",
+      "script": "loose.js",
+      "handler" : "toggleTip",
+      "shortcut": "cmd alt t",
+      "description" : "Rename Selected artboard(s) at the root of the currently selected item"
+    },
+    {
+      "name": "Nock",
+      "identifier": "nock",
+      "script": "loose.js",
+      "handler" : "toggleNock",
+      "shortcut": "cmd alt n",
+      "description" : "Rename Selected artboard(s) at the root of the currently selected item"
     }
   ],
   "menu": {
     "title": "Loose!",
     "items": [
-      "Loose!"
+      "both",
+      "tip",
+      "nock"
     ]
   }
 }
