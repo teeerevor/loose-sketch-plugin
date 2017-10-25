@@ -1,26 +1,21 @@
 {
-	"name": "loose",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "skpm build",
-		"publish": "skpm publish"
-	},
-	"author": "",
-	"license": "ISC",
-	"engines": {
-		"sketch": ">=3.0"
-	},
-	"devDependencies": {
-		"skpm": "^0.10.5"
-	},
-	"skpm": {
-		"manifest": "src/manifest.json",
-		"main": "plugin.sketchplugin"
-	},
-	"dependencies": {
-		"sketch-plugin-log": "^1.1.0"
-	}
+  "name": "loose",
+  "version": "1.0.0",
+  "engines": {
+    "sketch": ">=3.0"
+  },
+  "skpm": {
+    "name": "loose",
+    "manifest": "src/manifest.json",
+    "main": "plugin.sketchplugin"
+  },
+  "scripts": {
+    "build": "skpm-build",
+    "watch": "skpm-build --watch",
+    "start": "skpm-build --watch --run",
+    "postinstall": "npm run build && skpm-link"
+  },
+  "devDependencies": {
+    "@skpm/builder": "^0.1.4"
+  }
 }
