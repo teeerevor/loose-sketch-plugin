@@ -1,9 +1,6 @@
 # Loose!
 
-<img src="https://github.com/teeerevor/loose-sketch-plugin/raw/doc/intro.gif" />
-
-![Loose! Intro]
-(https://github.com/teeerevor/loose-sketch-plugin/raw/doc/intro.mp4)
+<img src="https://github.com/teeerevor/loose-sketch-plugin/raw/master/doc/intro.gif" />
 
 Install
 
