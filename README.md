@@ -1,10 +1,12 @@
 # Loose!
 
-![Loose! Intro](https://github.com/teeerevor/loose-sketch-plugin/raw/doc/intro.gif)
+https://github.com/teeerevor/loose-sketch-plugin/raw/doc/intro.gif
 
-![Loose! Intro](https://github.com/teeerevor/loose-sketch-plugin/raw/doc/intro.mp4)
+![Loose! Intro]
+(https://github.com/teeerevor/loose-sketch-plugin/raw/doc/intro.mp4)
 
 Install
+
 [Download](https://github.com/teeerevor/loose-sketch-plugin/archive/master.zip)
 
 Create
