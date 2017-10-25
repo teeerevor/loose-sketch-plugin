@@ -1,2 +1,9 @@
-# loose-sketch-plugin
-Ready your bows!... Nock!... Mark!... Draw!... Loose!... Turns those lines into arrows.
+# Loose!
+
+Demo
+Install
+Create
+Toggle Both => ⌘ + L
+Toggle Tip  => ^ + ⌘ + T
+Toggle Nock => ^ + ⌘ + N
+Updates
