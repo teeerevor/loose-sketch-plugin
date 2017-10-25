@@ -15,23 +15,23 @@
       "script": "loose.js",
       "handler" : "toggleBoth",
       "shortcut": "cmd l",
-      "description" : "Rename Selected artboard(s) at the root of the currently selected item"
+      "description" : "Toggle arrows heads at both ends of the line"
     },
     {
       "name": "Tip",
       "identifier": "tip",
       "script": "loose.js",
       "handler" : "toggleTip",
-      "shortcut": "cmd alt t",
-      "description" : "Rename Selected artboard(s) at the root of the currently selected item"
+      "shortcut": "cmd ctrl t",
+      "description" : "Toggle the arrow tip at the head"
     },
     {
       "name": "Nock",
       "identifier": "nock",
       "script": "loose.js",
       "handler" : "toggleNock",
-      "shortcut": "cmd alt n",
-      "description" : "Rename Selected artboard(s) at the root of the currently selected item"
+      "shortcut": "cmd ctrl n",
+      "description" : "Toggle the arrow tip at the nock end"
     }
   ],
   "menu": {
