@@ -1,6 +1,6 @@
 # Loose!
 
-https://github.com/teeerevor/loose-sketch-plugin/raw/doc/intro.gif
+<img src="https://github.com/teeerevor/loose-sketch-plugin/raw/doc/intro.gif" />
 
 ![Loose! Intro]
 (https://github.com/teeerevor/loose-sketch-plugin/raw/doc/intro.mp4)
