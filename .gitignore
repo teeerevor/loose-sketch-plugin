@@ -2,6 +2,9 @@
 plugin.sketchplugin/Contents/Sketch
 plugin.sketchplugin/Contents/Resources/_webpack_images
 
+# Release to Github
+Release
+
 # npm
 node_modules
 .npm
