@@ -3,9 +3,9 @@
   "engines": {
     "sketch": ">=3.0"
   },
-  "repository" :
-  { "type" : "git",
-    "url" : "https://github.com/teeerevor/loose-sketch-plugin"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/teeerevor/loose-sketch-plugin"
   },
   "skpm": {
     "name": "loose",
@@ -20,5 +20,6 @@
   },
   "devDependencies": {
     "@skpm/builder": "^0.1.4"
-  }
+  },
+  "version": "1.0.0"
 }
