@@ -1,5 +1,7 @@
 # Loose!
 
+Super fast arrows, great for those one-offs or for full-time arrowing needs.
+
 <img src="https://github.com/teeerevor/loose-sketch-plugin/raw/master/doc/intro.gif" />
 
 ## Manual Installation
@@ -9,6 +11,7 @@
 3. Delete previously installed version of the plugin (`Loose.sketchplugin`)
 4. Un-zip downloaded archive and double-click `Loose.sketchplugin` file to install.
 
+ 
 ## Features 
 
 Toggle Both => ⌘ + L
