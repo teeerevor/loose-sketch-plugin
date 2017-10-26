@@ -9,15 +9,23 @@
 3. Delete previously installed version of the plugin (`Loose.sketchplugin`)
 4. Un-zip downloaded archive and double-click `Loose.sketchplugin` file to install.
 
-Create
+## Features 
 
 Toggle Both => ⌘ + L
 
+<img src="https://github.com/teeerevor/loose-sketch-plugin/raw/master/doc/loose.gif" />
+
 Toggle Tip  => ^ + ⌘ + T
+
+<img src="https://github.com/teeerevor/loose-sketch-plugin/raw/master/doc/tip.gif" />
 
 Toggle Nock => ^ + ⌘ + N
 
-Updates
+<img src="https://github.com/teeerevor/loose-sketch-plugin/raw/master/doc/nock.gif" />
+
+Updates 
+
+<img src="https://github.com/teeerevor/loose-sketch-plugin/raw/master/doc/update.gif" />
 
 ## Thanks to
 - ![joclin/arrowfy](https://github.com/joclin/arrowfy) for the inspiration
