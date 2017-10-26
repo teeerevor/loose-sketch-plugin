@@ -1,8 +1,11 @@
 {
   "name": "loose",
-  "version": "1.0.0",
   "engines": {
     "sketch": ">=3.0"
+  },
+  "repository" :
+  { "type" : "git",
+    "url" : "https://github.com/teeerevor/loose-sketch-plugin"
   },
   "skpm": {
     "name": "loose",
