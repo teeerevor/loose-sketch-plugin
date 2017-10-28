@@ -72,19 +72,7 @@ const groupAndResize = (group, children) => {
   return group;
 };
 
-const createArrow = (doc, layer, arrowPosition, arrowType, arrowScale) => {
-  var arrowheadStart = createArrowhead({
-    layer,
-    headPosition: ARROW_START,
-    name: ARROW_START_NAME
-  });
-
-  var arrowheadEnd = createArrowhead({
-    layer,
-    headPosition: ARROW_END,
-    name: ARROW_END_NAME
-  });
-
+const setupArrow = (doc, layer) => {
   var parent = layer.parentGroup();
   var group = MSLayerGroup.new();
   parent.removeLayer(layer);
@@ -93,7 +81,7 @@ const createArrow = (doc, layer, arrowPosition, arrowType, arrowScale) => {
   group.setName(
     name.indexOf(ARROW_NAME_SUFFIX) === -1 ? name + ARROW_NAME_SUFFIX : name
   );
-  return groupAndResize(group, [layer, arrowheadStart, arrowheadEnd]);
+  return groupAndResize(group, [layer]);
 };
 
 const createHead = (group, line) => {
@@ -104,6 +92,7 @@ const createHead = (group, line) => {
   });
   groupAndResize(group, [start]);
 };
+
 const createNock = (group, line) => {
   const end = createArrowhead({
     layer: line,
@@ -112,6 +101,7 @@ const createNock = (group, line) => {
   });
   groupAndResize(group, [end]);
 };
+
 const grabItems = group => {
   var start, end, line;
   group.layers().forEach(child => {
@@ -127,8 +117,6 @@ const grabItems = group => {
 };
 
 const toggleArrows = (group, head, nock) => {
-  log('head='+head);
-  log('nock='+nock);
   const { start, end, line } = grabItems(group);
 
   if (head && nock) {
@@ -140,10 +128,12 @@ const toggleArrows = (group, head, nock) => {
     if (!start && !!end) {
       createHead(group, line);
     }
-    if (!!start && !end) {
+    if (!start && !end) {
       createHead(group, line);
       createNock(group, line);
     }
+    //if (!!start && !end)
+    // remove both
   } else if (head && !nock) {
     group.removeLayer(end);
     if (!end)
@@ -167,7 +157,7 @@ const isCompletShape = layer => {
   return startx === endx && starty === endy;
 };
 
-const arrowsWork = (context, head, nock) => {
+const arrowMaker = (context, head, nock) => {
   var doc = context.document;
   var selectedLayers = context.selection;
   var selectedCount = selectedLayers.count();
@@ -186,7 +176,9 @@ const arrowsWork = (context, head, nock) => {
         if (isCompletShape(layer)) {
           doc.showMessage("Skipping layer, I'll only add arrows to lines.");
         } else {
-          arrows.push(createArrow(doc, layer));
+          const newArrow = setupArrow(doc, layer);
+          toggleArrows(newArrow, head, nock);
+          arrows.push(newArrow);
         }
       } else if (layer.isKindOfClass(MSLayerGroup)) {
         toggleArrows(layer, head, nock);
@@ -203,19 +195,19 @@ const arrowsWork = (context, head, nock) => {
 var toggleTip = function(context) {
   const nock = false;
   const head = true;
-  arrowsWork(context, head, nock);
+  arrowMaker(context, head, nock);
 };
 
 var toggleNock = function(context) {
   const nock = true;
   const head = false;
-  arrowsWork(context, head, nock);
+  arrowMaker(context, head, nock);
 };
 
 var toggleBoth = function(context) {
   const nock = true;
   const head = true;
-  arrowsWork(context, head, nock);
+  arrowMaker(context, head, nock);
 };
 
 export {toggleBoth, toggleNock, toggleTip};
