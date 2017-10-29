@@ -4,7 +4,7 @@
   "author": "Trevor Wolf",
   "homepage": "https://github.com/teeerevor/loose-sketch-plugin",
   "appcast": "https://raw.githubusercontent.com/teeerevor/loose-sketch-plugin/master/.appcast.xml",
-  "identifier": "com.teeerevor.sketch.loose!",
+  "identifier": "com.teeerevor.sketch.loose",
   "version": "1.0.2",
   "compatibleVersion": "42",
   "bundleVersion": "1",
