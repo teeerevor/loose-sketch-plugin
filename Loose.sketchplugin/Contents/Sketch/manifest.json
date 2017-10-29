@@ -1,0 +1,46 @@
+{
+  "name": "Loose!",
+  "description": "Fire those arrows. Adds arrows to selected paths. Matches color and weight.",
+  "author": "Trevor Wolf",
+  "homepage": "https://github.com/teeerevor/loose-sketch-plugin",
+  "appcast": "https://raw.githubusercontent.com/teeerevor/loose-sketch-plugin/master/.appcast.xml",
+  "identifier": "com.teeerevor.sketch.loose",
+  "version": "1.0.2",
+  "compatibleVersion": "42",
+  "bundleVersion": "1",
+  "commands": [
+    {
+      "name": "Loose!",
+      "identifier": "both",
+      "script": "loose.js",
+      "handler": "toggleBoth",
+      "shortcut": "cmd l",
+      "description": "Toggle arrows heads at both ends of the line"
+    },
+    {
+      "name": "Tip",
+      "identifier": "tip",
+      "script": "loose.js",
+      "handler": "toggleTip",
+      "shortcut": "cmd ctrl t",
+      "description": "Toggle the arrow head at the tip end"
+    },
+    {
+      "name": "Nock",
+      "identifier": "nock",
+      "script": "loose.js",
+      "handler": "toggleNock",
+      "shortcut": "cmd ctrl n",
+      "description": "Toggle the arrow head at the nock end"
+    }
+  ],
+  "menu": {
+    "title": "Loose!",
+    "items": [
+      "both",
+      "tip",
+      "nock"
+    ]
+  },
+  "disableCocoaScriptPreprocessor": true
+}
