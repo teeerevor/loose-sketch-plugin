@@ -5,6 +5,8 @@ plugin.sketchplugin/Contents/Resources/_webpack_images
 # Release to Github
 Release
 
+github.tokenRef
+
 # npm
 node_modules
 .npm
