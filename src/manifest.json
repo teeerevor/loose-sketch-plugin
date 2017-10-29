@@ -7,7 +7,7 @@
   "identifier": "com.teeerevor.sketch.loose!",
   "version": "1.0.2",
   "compatibleVersion": "42",
-  "bundleVersion": "1.0.2",
+  "bundleVersion": "1",
   "commands": [
     {
       "name": "Loose!",
